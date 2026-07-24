@@ -1,0 +1,66 @@
+<?php
+/**
+ * NIM   : 2457401026
+ * Nama  : Masitoh
+ * Kelas : MI24
+ */
+
+require_once __DIR__ . '/../includes/auth.php';
+
+$error = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nama_kategori = trim($_POST['nama_kategori']);
+
+    if ($nama_kategori === '') {
+        $error = "Nama kategori tidak boleh kosong";
+    } else {
+        $stmt = mysqli_prepare($conn, "INSERT INTO kategori (nama_kategori) VALUES (?)");
+        mysqli_stmt_bind_param($stmt, "s", $nama_kategori);
+        mysqli_stmt_execute($stmt);
+        header("Location: kategori.php?added=1");
+        exit;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Kategori — Katalog Online</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <div class="admin-shell">
+        <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <div>
+                    <p class="eyebrow">Kelola Katalog</p>
+                    <h1>Tambah Kategori</h1>
+                    <p>Buat kategori baru untuk mengelompokkan produk.</p>
+                </div>
+            </div>
+
+            <div class="form-panel">
+                <?php if ($error): ?>
+                    <div class="alert-error"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+
+                <form method="post" action="kategori_tambah.php">
+                    <div class="field-group">
+                        <label>Nama Kategori</label>
+                        <input type="text" name="nama_kategori" placeholder="Contoh: Baju" required autofocus>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Simpan Kategori</button>
+                        <a href="kategori.php" class="btn btn-secondary">Batal</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
